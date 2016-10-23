@@ -1,0 +1,49 @@
+<style>
+	body{ background-color:#efe; }
+	.note { width: 500px; border: 1px red solid; background: #DEE; text-align: left; padding: 20px }
+	.note a{color: #00B; text-decoration:none}
+	.ajuro.logo{ width: 100px; height: 100px; }
+</style>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="AjuroProductCard.js"></script>	
+	<link rel="stylesheet" type="text/css" href="AjuroProductCard.css">	
+</head>
+<body>
+	<center>
+		<a href='http://aju.ro' target='_blank'>
+			<img class='ajuro logo' src='http://aju.ro/img/logo.png' />
+		</a>
+		<div class='ajuro note'>AjuroProductCard<br>Developed by <a href='https://www.linkedin.com/in/florincumpanasu' target='_blank'>Cumpanasu Florin</a> for <a href='http://aju.ro' target='_blank'>aju.ro</a> resoueces <br>(the romanian open market <a href='http://aju.ro/api' target='_blank'>API</a>). Example of using the </div>
+		<div id='ajuro_last_posts'></div>
+		Data received from <a href='http://aju.ro/api/index.php?read=product&take=10&skip=0' target='_blank'>aju.ro</a>
+		<div class='ajuro note' id='received_json'></div>
+	<center>
+</body>
+</html>
+<script>
+var readUlr = 'http://aju.ro/api/index.php'; // GET example ?read=product&take=10&skip=0
+
+function GetLasts(entity){
+    return($.ajax({
+		url: readUlr,
+		type: 'GET',
+		dataType: 'json',
+		data: { read: entity, take: 10, skip: 0 }
+	}));
+}
+
+var delegate = GetLasts('allproduct');
+delegate.success(function (response) 
+{                
+	$('#received_json').html(JSON.stringify(response,null,'\t').replace(/\n/g,'<br>').replace(/\t/g,'&nbsp;&nbsp;&nbsp;'));
+
+	for(i=response.result.length; i>0; i--)
+	{
+		AddPost('ajuro_last_posts', response.result[i-1]);
+	}
+}).error(function(xhr, error){
+    //alert( "Error: " + xhr.statusText );
+});
+</script>
